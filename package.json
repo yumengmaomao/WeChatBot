@@ -1,0 +1,29 @@
+{
+  "name": "WechatBot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "build": "esbuild src/main.ts --bundle --platform=node --format=cjs --outfile=dist/bundle.cjs",
+    "dev": "npm run type-check && npm run build -- --watch",
+    "start": "node dist/bundle.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.7.0",
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "dotenv": "^17.2.1",
+    "esbuild": "^0.25.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@bugsnag/js": "^8.4.0",
+    "@logtail/node": "^0.5.5",
+    "mqtt": "^5.14.0"
+  }
+}
