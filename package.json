@@ -2,7 +2,7 @@
   "name": "WechatBot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/bundle.cjs",
   "type": "module",
   "scripts": {
     "type-check": "tsc --noEmit",
