@@ -41,7 +41,7 @@ jobs:
             echo "--- 正在进行部署前检查 ---"
 
             # 检查 Node.js 是否安装
-            if ! command -v node &> /dev/null
+            if ! command -v node -v &> /dev/null
             then
               echo "错误：未找到 Node.js。请在服务器上安装 Node.js 后重试。"
               exit 1
