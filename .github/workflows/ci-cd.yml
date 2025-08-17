@@ -1,0 +1,83 @@
+# 工作流的名称
+name: CI/CD Pipeline
+
+# 触发工作流的事件，当代码推送到 main 分支时自动运行
+on:
+  push:
+    branches:
+      - main
+
+# 定义一个名为 'build-and-deploy' 的作业
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 步骤 1: 拉取代码
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 步骤 2: 设置 Node.js 环境
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      # 步骤 3: 安装依赖并构建
+      - name: Install dependencies and build
+        run: |
+          npm install
+          npm run build
+
+      # 步骤 4: SSH 部署到服务器
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # 在服务器上执行的命令
+          script: |
+            echo "--- 正在进行部署前检查 ---"
+
+            # 检查 Node.js 是否安装
+            if ! command -v node &> /dev/null
+            then
+              echo "错误：未找到 Node.js。请在服务器上安装 Node.js 后重试。"
+              exit 1
+            fi
+            echo "Node.js 检查通过。"
+
+            # 检查 PM2 是否安装
+            if ! command -v pm2 &> /dev/null
+            then
+              echo "警告：未找到 PM2。你可能需要手动启动或安装 PM2。"
+            else
+              echo "PM2 检查通过。"
+            fi
+
+            # 检查项目目录是否存在
+            DEPLOY_PATH="/path/to/your/project-on-server"
+            if [ ! -d "$DEPLOY_PATH" ]; then
+              echo "错误：项目目录不存在：$DEPLOY_PATH"
+              echo "请手动在服务器上创建此目录。"
+              exit 1
+            fi
+            echo "项目目录检查通过。"
+
+            echo "--- 检查完成，开始部署 ---"
+
+            # 进入你的项目部署目录
+            cd $DEPLOY_PATH
+
+            # 拉取最新代码
+            git pull origin main
+
+            # 重新安装依赖
+            npm install
+
+            # 重新构建
+            npm run build
+
+            # 使用 PM2 重启应用
+            pm2 restart your-app-name
