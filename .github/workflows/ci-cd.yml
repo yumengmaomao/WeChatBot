@@ -57,7 +57,7 @@ jobs:
             fi
 
             # 检查项目目录是否存在
-            DEPLOY_PATH="/path/to/your/project-on-server"
+            DEPLOY_PATH="/opt/WeChatBot"
             if [ ! -d "$DEPLOY_PATH" ]; then
               echo "错误：项目目录不存在：$DEPLOY_PATH"
               echo "请手动在服务器上创建此目录。"
