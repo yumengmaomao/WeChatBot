@@ -40,6 +40,25 @@ jobs:
           script: |
             echo "--- 正在进行部署前检查 ---"
 
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+            # 检查 Node.js 是否安装
+            if ! command -v node &> /dev/null
+            then
+              echo "错误：未找到 Node.js。请在服务器上安装 Node.js 后重试。"
+              exit 1
+            fi
+            echo "Node.js 检查通过。"
+
+            # 检查 PM2 是否安装
+            if ! command -v pm2 &> /dev/null
+            then
+              echo "警告：未找到 PM2。你可能需要手动启动或安装 PM2。"
+            else
+              echo "PM2 检查通过。"
+            fi
+
             # 检查项目目录是否存在
             DEPLOY_PATH="/opt/WeChatBot"
             if [ ! -d "$DEPLOY_PATH" ]; then
@@ -64,4 +83,4 @@ jobs:
             npm run build
 
             # 使用 PM2 重启应用
-            pm2 restart your-app-name
+            pm2 restart WeChatBot
